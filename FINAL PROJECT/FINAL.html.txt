@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Online Course Registration — Pro Edition (Secure View)</title>
+  <style>
+    /* ====== THEME ====== */
+    :root{
+      --bg:#0b1020;--surface:#0e1530;--card:#111936;--muted:#a9b1d6;--text:#e2e8f0;
+      --brand:#6c8cff;--brand-2:#9b7bff;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;
+      --ring: rgba(108,140,255,.22);--shadow:0 12px 34px rgba(0,0,0,.35);--radius:16px;
+    }
+    .light:root{
+      --bg:#f6f7fb;--surface:#ffffff;--card:#ffffff;--muted:#5b647e;--text:#111827;
+      --brand:#3d5afe;--brand-2:#7c4dff;--ok:#16a34a;--warn:#d97706;--danger:#dc2626;
+      --ring: rgba(61,90,254,.18);--shadow:0 8px 22px rgba(15,23,42,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+      background:
+        radial-gradient(1200px 700px at 100% -10%, rgba(108,140,255,.15), transparent 60%),
+        radial-gradient(1200px 700px at -10% 110%, rgba(155,123,255,.12), transparent 60%),
+        var(--bg);
+      color:var(--text);line-height:1.45;
+    }
+    .container{max-width:1200px;margin:28px auto;padding:0 16px}
+    header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .title{font-size:clamp(22px,3vw,32px);font-weight:800;letter-spacing:.3px}
+    .subtitle{color:var(--muted);font-size:13px}
+    .stack{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+    /* NAV BAR (routes) */
+    nav{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+    .navlink{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);cursor:pointer;font-weight:700;opacity:.85}
+    .navlink.active{opacity:1;background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;border:0}
+    .light .navlink{border:1px solid rgba(2,6,23,.12)}
+
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+    @media (max-width: 980px){.grid{grid-template-columns:1fr}}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+      border:1px solid rgba(255,255,255,.06);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .light .card{border:1px solid rgba(2,6,23,.06)}
+
+    form{padding:18px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .row-1{display:grid;grid-template-columns:1fr;gap:12px}
+    @media (max-width:700px){.row,.row-3{grid-template-columns:1fr}}
+
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input,select,textarea{
+      width:100%;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
+      background:var(--surface);color:var(--text);outline:none;transition:.2s border-color,.2s box-shadow
+    }
+    .light input,.light select,.light textarea{border:1px solid rgba(2,6,23,.12)}
+    input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--ring)}
+    textarea{min-height:84px;resize:vertical}
+
+    .actions{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+    .btn{appearance:none;border:0;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+    .btn-primary{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:white}
+    .btn-outline{background:transparent;border:1px solid rgba(255,255,255,.14);color:var(--text)}
+    .light .btn-outline{border:1px solid rgba(2,6,23,.14)}
+    .btn-danger{background:linear-gradient(90deg,#ef4444,#f97316);color:white}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .btn-sm{padding:6px 10px;font-weight:600;border-radius:10px;font-size:12px}
+
+    .legend{display:flex;gap:10px;flex-wrap:wrap;padding:12px 18px;border-top:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:12px}
+    .chip{display:inline-flex;align-items:center;gap:8px;font-size:12px;border:1px solid rgba(255,255,255,.12);padding:6px 10px;border-radius:999px}
+    .light .chip{border:1px solid rgba(2,6,23,.12)}
+    .dot{width:8px;height:8px;border-radius:999px;background:var(--brand)}
+
+    .panel{padding:12px 14px}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:8px}
+    .toolbar .left{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    .toolbar input{max-width:260px}
+
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    thead th{font-size:12px;color:var(--muted);text-align:left;padding:10px 12px;position:sticky;top:0;background:var(--surface);z-index:1}
+    tbody td{padding:12px;border-top:1px solid rgba(255,255,255,.08)}
+    .light tbody td{border-top:1px solid rgba(2,6,23,.06)}
+    tbody tr:hover{background:rgba(255,255,255,.04)}
+    .pill{font-size:11px;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);display:inline-block}
+    .pill.ok{border-color:rgba(34,197,94,.6);color:#bbf7d0}
+    .pill.low{border-color:rgba(245,158,11,.6);color:#fde68a}
+    .pill.full{border-color:rgba(239,68,68,.6);color:#fecaca}
+
+    .badge{font-size:11px;padding:2px 6px;border-radius:999px;background:rgba(108,140,255,.2);border:1px solid rgba(108,140,255,.35)}
+
+    .empty{padding:30px;color:var(--muted);text-align:center}
+
+    .toast{position:fixed;right:18px;bottom:18px;padding:12px 14px;border-radius:12px;background:#10172a;border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);display:none}
+    .light .toast{background:#ffffff;border:1px solid rgba(2,6,23,.12)}
+
+    .caps{font-variant:all-small-caps;letter-spacing:.6px;font-weight:800;color:var(--muted)}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    .tabs{display:flex;gap:8px;border-bottom:1px solid rgba(255,255,255,.08);padding:0 14px}
+    .light .tabs{border-bottom:1px solid rgba(2,6,23,.08)}
+    .tab{padding:10px 12px;border-radius:12px 12px 0 0;cursor:pointer;font-weight:700;opacity:.7}
+    .tab.active{opacity:1;background:var(--surface);border:1px solid rgba(255,255,255,.08);border-bottom:0}
+    .light .tab.active{border:1px solid rgba(2,6,23,.08)}
+
+    .progress{height:10px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+    .bar{height:100%;background:linear-gradient(90deg,var(--brand),var(--brand-2));width:0%}
+
+    canvas{max-width:100%}
+
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;border:1px solid rgba(255,255,255,.18);padding:2px 6px;border-radius:6px}
+    .light .kbd{border:1px solid rgba(2,6,23,.18)}
+
+    /* MOBILE FRIENDLY EXTRAS */
+    @media (max-width:520px){
+      header .stack{width:100%;justify-content:flex-start}
+      .title{font-size:22px}
+      input,select,textarea{padding:16px}
+      thead{position:sticky;top:0}
+    }
+
+    /* Modals */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+    .modal{max-width:520px;width:100%}
+  </style>
+</head>
+<body>
+  <div class="container" id="appRoot">
+    <header>
+      <div>
+        <div class="title">📚 Online Course Registration — Pro Edition</div>
+        <div class="subtitle">Mobile-ready SPA with admin-only data (password-gated), waitlist, conflict checks, analytics, and DBMS views.</div>
+        <nav>
+          <span class="navlink active" data-route="register">Register</span>
+          <span class="navlink" data-route="catalog">Catalog</span>
+          <span class="navlink admin-only" data-route="admin" style="display:none">Admin</span>
+        </nav>
+      </div>
+      <div class="stack">
+        <button class="btn btn-outline" id="themeBtn" title="Toggle theme">🌗 Theme</button>
+        <button class="btn btn-outline admin-only" id="exportCsvBtn" title="Download registrations as CSV" style="display:none">Export CSV</button>
+        <button class="btn btn-outline admin-only" id="exportSqlBtn" title="Download generated SQL" style="display:none">Export SQL</button>
+        <button class="btn btn-outline" id="adminBtn" title="Admin login/setup">🔒 Admin</button>
+        <span id="adminBadge" class="chip" style="display:none"><span class="dot"></span> Admin</span>
+      </div>
+    </header>
+
+    <div id="route-register" class="grid route">
+      <!-- Left: Registration Form & Tabs (DBMS tab hidden for students) -->
+      <div class="card">
+        <div class="tabs">
+          <div class="tab active" data-tab="form">Registration</div>
+          <div class="tab admin-only" data-tab="dbms" style="display:none">DBMS</div>
+        </div>
+        <div id="tab-form" class="tabpane">
+          <form id="regForm" novalidate>
+            <h3 style="margin:6px 2px 14px">Register for a Course</h3>
+            <div class="row">
+              <div>
+                <label for="fullName">Full Name</label>
+                <input id="fullName" name="fullName" type="text" placeholder="e.g., Priya Sharma" required minlength="2" />
+              </div>
+              <div>
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@example.com" required />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" type="tel" placeholder="10-digit number" pattern="^[0-9]{10}$" required />
+              </div>
+              <div>
+                <label for="course">Course <span class="badge" id="seatInfo">—</span></label>
+                <select id="course" name="course" required></select>
+              </div>
+            </div>
+            <div class="row-3">
+              <div>
+                <label for="mode">Mode</label>
+                <select id="mode" name="mode">
+                  <option value="Online">Online</option>
+                  <option value="On‑campus">On‑campus</option>
+                  <option value="Hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div>
+                <label for="start">Start Date</label>
+                <input id="start" type="date" required />
+              </div>
+              <div>
+                <label for="time">Preferred Time</label>
+                <select id="time">
+                  <option>Morning</option>
+                  <option>Afternoon</option>
+                  <option>Evening</option>
+                </select>
+              </div>
+            </div>
+            <div class="row-1">
+              <div>
+                <label for="notes">Notes (optional)</label>
+                <textarea id="notes" placeholder="Anything we should know?"></textarea>
+              </div>
+            </div>
+            <div class="actions">
+              <button type="submit" class="btn btn-primary" id="submitBtn">Register</button>
+              <button type="button" class="btn btn-outline" id="resetBtn">Reset</button>
+              <button type="button" class="btn btn-danger admin-only" id="clearAllBtn" title="Remove all registrations" style="display:none">Clear All</button>
+            </div>
+            <div class="legend">
+              <span class="chip"><span class="dot" style="background:var(--ok)"></span> Seats OK</span>
+              <span class="chip"><span class="dot" style="background:var(--warn)"></span> Low seats</span>
+              <span class="chip"><span class="dot" style="background:var(--danger)"></span> Full</span>
+              <span class="chip">Shortcut: <span class="kbd">Ctrl</span> + <span class="kbd">K</span> to focus search</span>
+            </div>
+        </form>
+        </div>
+        <div id="tab-dbms" class="tabpane" style="display:none;padding:14px">
+          <h3 style="margin:6px 0 10px">DBMS View</h3>
+          <p class="subtitle">Admin-only: <strong>tables</strong>, <strong>constraints</strong>, simulated <strong>triggers</strong>, waitlists, and generated SQL.</p>
+          <div class="row">
+            <div>
+              <h4>Schema (DDL)</h4>
+              <pre id="ddl" style="white-space:pre-wrap;background:var(--surface);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.10)"></pre>
+            </div>
+            <div>
+              <h4>Generate SQL (DML)</h4>
+              <textarea id="generatedSql" readonly></textarea>
+              <div class="actions"><button class="btn btn-outline btn-sm" id="refreshSqlBtn">Refresh SQL</button></div>
+            </div>
+          </div>
+          <div class="row-1">
+            <div>
+              <h4>Run a simple "SELECT" (client‑side filter)</h4>
+              <div class="subtitle">Example: <code>WHERE course = 'py101' AND mode = 'Online'</code></div>
+              <div class="stack">
+                <input id="where" placeholder="WHERE … (supports =, LIKE, AND, OR)" />
+                <button class="btn btn-primary btn-sm" id="applyWhere">Apply</button>
+                <button class="btn btn-outline btn-sm" id="clearWhere">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Admin Panel (Roster, Capacity & Analytics) — HIDDEN for students -->
+      <div id="adminPanel" class="card" style="display:none">
+        <div class="panel">
+          <div class="toolbar">
+            <div class="left">
+              <input id="search" type="search" placeholder="Search name, email, course…" />
+              <span class="caps" id="counts">0 enrolled</span>
+            </div>
+            <div class="stack">
+              <label for="courseFilter" class="sr-only">Filter</label>
+              <select id="courseFilter"><option value="">All Courses</option></select>
+              <select id="modeFilter">
+                <option value="">All Modes</option>
+                <option>Online</option>
+                <option>On‑campus</option>
+                <option>Hybrid</option>
+              </select>
+            </div>
+          </div>
+          <div style="max-height:360px;overflow:auto;border-top:1px solid rgba(255,255,255,.06)">
+            <table id="table">
+              <thead>
+                <tr>
+                  <th data-sort="name">Name ▲▼</th>
+                  <th data-sort="email">Email ▲▼</th>
+                  <th>Phone</th>
+                  <th data-sort="courseTitle">Course ▲▼</th>
+                  <th>Mode</th>
+                  <th>Start</th>
+                  <th>Time</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tbody">
+                <tr><td colspan="9" class="empty">No registrations yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="padding:10px 4px 14px">
+            <h4 style="margin:6px 0 10px">Course Capacity</h4>
+            <div id="courseCaps"></div>
+          </div>
+
+          <div style="padding:10px 4px 14px">
+            <h4 style="margin:6px 0 10px">Analytics</h4>
+            <div class="row">
+              <div>
+                <canvas id="chartEnroll" height="140"></canvas>
+              </div>
+              <div>
+                <canvas id="chartModes" height="140"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div style="padding:10px 4px 14px">
+            <h4 style="margin:6px 0 10px">Audit Log (simulated trigger)</h4>
+            <div id="audit" style="font-size:12px;color:var(--muted);max-height:120px;overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catalog Route (read-only course list for everyone) -->
+    <div id="route-catalog" class="route" style="display:none">
+      <div class="card">
+        <div class="panel">
+          <div class="toolbar">
+            <div class="left">
+              <input id="searchCourse" type="search" placeholder="Search courses… (title, tag)" />
+              <button class="btn btn-outline btn-sm admin-only" id="addCourseBtn" style="display:none">Add Course</button>
+            </div>
+            <div class="caps">Browse catalog • prerequisites • schedule</div>
+          </div>
+          <div id="courseList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- =========== AUTH MODAL (login / setup / change password) =========== -->
+  <template id="authTpl">
+    <div class="overlay">
+      <div class="modal card" style="padding:18px">
+        <h3 id="authTitle">🔒 Admin Access</h3>
+        <p class="subtitle" id="authHint">Set an admin password to protect roster & DBMS views.</p>
+        <div class="row-1">
+          <div>
+            <label for="pwd">Password</label>
+            <input id="pwd" type="password" placeholder="Enter strong password" />
+          </div>
+          <div id="confirmWrap" style="display:none">
+            <label for="pwd2">Confirm Password</label>
+            <input id="pwd2" type="password" placeholder="Re-enter password" />
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="authPrimary">Continue</button>
+          <button class="btn btn-outline" id="authCancel">Cancel</button>
+        </div>
+        <div class="subtitle" style="margin-top:6px">Password policy: ≥8 chars with upper, lower, number, and special character.</div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    // ===== Helpers =====
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+    const byId = id => document.getElementById(id);
+
+    const storeKey = 'course_registrations_v2';
+    const courseKey = 'course_catalog_v2';
+    const auditKey = 'audit_log_v2';
+    const adminHashKey = 'admin_pwd_hash_v1';
+    const adminSessionKey = 'admin_session_v1';
+
+    let editingId = null; // current editing record id
+    let WHERE = null; // DBMS tab WHERE filter
+
+    // ===== Demo Data (includes prerequisites & schedule for conflicts) =====
+    const defaultCourses = [
+      { id:'js101',  title:'JavaScript 101', capacity: 6, tags:['web','js'],
+        schedule:{days:['Mon','Wed'], time:'Morning'}, prereq:[] },
+      { id:'web201', title:'Responsive Web Design', capacity: 5, tags:['web','css'],
+        schedule:{days:['Tue'], time:'Afternoon'}, prereq:['js101'] },
+      { id:'py101',  title:'Python for Beginners', capacity: 8, tags:['python'],
+        schedule:{days:['Mon'], time:'Afternoon'}, prereq:[] },
+      { id:'ds301',  title:'Data Structures', capacity: 5, tags:['cs','algorithms'],
+        schedule:{days:['Wed','Fri'], time:'Evening'}, prereq:['py101'] },
+      { id:'ml401',  title:'Intro to Machine Learning', capacity: 4, tags:['ml','ai'],
+        schedule:{days:['Sat'], time:'Morning'}, prereq:['ds301'] }
+    ];
+
+    // ===== Persistence =====
+    const load = (key, fallback) => { try{ return JSON.parse(localStorage.getItem(key)) ?? fallback }catch{ return fallback } };
+    const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+
+    const loadRegs = () => load(storeKey, []);
+    const saveRegs = (rows) => save(storeKey, rows);
+
+    const loadCourses = () => load(courseKey, defaultCourses);
+    const saveCourses = (rows) => save(courseKey, rows);
+
+    const loadAudit = () => load(auditKey, []);
+    const saveAudit = (rows) => save(auditKey, rows);
+
+    function log(action, payload){
+      const logArr = loadAudit();
+      logArr.unshift({ id: crypto.randomUUID(), ts: new Date().toISOString(), action, payload });
+      saveAudit(logArr.slice(0,200));
+      renderAudit();
+    }
+
+    // ===== UI Feedback =====
+    function toast(msg){
+      const t = byId('toast');
+      t.textContent = msg; t.style.display = 'block';
+      clearTimeout(t._timer);
+      t._timer = setTimeout(()=> t.style.display='none', 2400);
+    }
+
+    // ===== Password & Admin auth (basic UI gating, not server security) =====
+    const pwdPolicy = s => /[a-z]/.test(s) && /[A-Z]/.test(s) && /\d/.test(s) && /[^\w\s]/.test(s) && s.length>=8;
+
+    async function sha256Hex(str){
+      if (window.isSecureContext && window.crypto?.subtle){
+        const enc = new TextEncoder().encode(str);
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+      }
+      // Fallback (non-cryptographic) for file:// contexts
+      let h=0; for(let i=0;i<str.length;i++){ h=(h<<5)-h+str.charCodeAt(i); h|=0; }
+      return 'x'+(h>>>0).toString(16);
+    }
+
+    function isAdmin(){ return sessionStorage.getItem(adminSessionKey)==='1'; }
+
+    function updateAdminUI(){
+      const on = isAdmin();
+      $$('.admin-only').forEach(el=> el.style.display = on ? '' : 'none');
+      byId('adminPanel').style.display = on ? '' : 'none';
+      byId('adminBadge').style.display = on ? 'inline-flex' : 'none';
+      // Keep Register route always visible, but hide DBMS tab for students
+      const dbmsTab = $(`.tab[data-tab="dbms"]`);
+      if(dbmsTab) dbmsTab.style.display = on ? '' : 'none';
+      renderCourseOptions();
+      renderCourseList();
+      renderTable();
+    }
+
+    function showAuthModal(mode){ // mode: 'setup', 'login'
+      const tpl = byId('authTpl').content.cloneNode(true);
+      const overlay = tpl.querySelector('.overlay');
+      const title = tpl.querySelector('#authTitle');
+      const hint = tpl.querySelector('#authHint');
+      const pwd = tpl.querySelector('#pwd');
+      const pwd2 = tpl.querySelector('#pwd2');
+      const confirmWrap = tpl.querySelector('#confirmWrap');
+      const primary = tpl.querySelector('#authPrimary');
+      const cancel = tpl.querySelector('#authCancel');
+
+      if(mode==='setup'){
+        title.textContent = '🔐 Set Admin Password';
+        hint.textContent = 'Create a strong password to unlock admin-only views.';
+        confirmWrap.style.display = '';
+        primary.textContent = 'Save Password';
+      } else {
+        title.textContent = '🔓 Admin Login';
+        hint.textContent = 'Enter your admin password to view roster, analytics, and DBMS.';
+        confirmWrap.style.display = 'none';
+        primary.textContent = 'Login';
+      }
+
+      primary.onclick = async ()=>{
+        const pass = pwd.value.trim();
+        if(!pass){ toast('Password required'); return }
+        if(mode==='setup'){
+          const pass2 = pwd2.value.trim();
+          if(pass!==pass2){ toast('Passwords do not match'); return }
+          if(!pwdPolicy(pass)){ toast('Password too weak'); return }
+          const hash = await sha256Hex(pass);
+          localStorage.setItem(adminHashKey, hash);
+          sessionStorage.setItem(adminSessionKey, '1');
+          toast('Admin password set');
+          overlay.remove();
+          updateAdminUI();
+        } else {
+          const stored = localStorage.getItem(adminHashKey);
+          if(!stored){ toast('No admin password set. Please set one.'); return }
+          const hash = await sha256Hex(pass);
+          if(hash===stored){ sessionStorage.setItem(adminSessionKey,'1'); toast('Welcome, Admin'); overlay.remove(); updateAdminUI(); }
+          else { toast('Incorrect password'); }
+        }
+      };
+      cancel.onclick = ()=> overlay.remove();
+      document.body.appendChild(overlay);
+      setTimeout(()=> pwd.focus(), 50);
+    }
+
+    // Toggle login/setup on button
+    byId('adminBtn')?.addEventListener('click', ()=>{
+      const hasPwd = !!localStorage.getItem(adminHashKey);
+      if(isAdmin()){
+        if(confirm('Log out admin?')){ sessionStorage.removeItem(adminSessionKey); updateAdminUI(); toast('Logged out'); }
+      } else {
+        showAuthModal(hasPwd? 'login' : 'setup');
+      }
+    });
+
+    // ===== Seat Logic =====
+    function seatsUsed(courseId){ return loadRegs().filter(r=>r.course===courseId && r.status!=='WAITLIST').length }
+    function seatsLeft(courseId){ const c = loadCourses().find(x=>x.id===courseId); return (c?.capacity ?? 0) - seatsUsed(courseId) }
+
+    function seatBadge(courseId){
+      const left = seatsLeft(courseId);
+      const c = loadCourses().find(x=>x.id===courseId);
+      if(!c) return '';
+      const pct = Math.max(0,left) / Math.max(1,c.capacity);
+      let cls = 'pill ok';
+      if (left <= 0) cls = 'pill full';
+      else if (pct <= .3) cls = 'pill low';
+      return `<span class="${cls}">${left <= 0 ? 'Full' : left + ' left'}</span>`;
+    }
+
+    // ===== Course Catalog UI =====
+    function renderCourseOptions(){
+      const sel = byId('course');
+      if(!sel) return;
+      const courses = loadCourses();
+      sel.innerHTML = '<option value="" disabled selected>Select a course</option>' +
+        courses.map(c=>{
+          const left = seatsLeft(c.id);
+          return `<option value="${c.id}">${c.title} (${Math.max(0,left)}/${c.capacity})</option>`;
+        }).join('');
+      const filter = byId('courseFilter');
+      if(filter) filter.innerHTML = '<option value="">All Courses</option>' + courses.map(c=>`<option value="${c.id}">${c.title}</option>`).join('');
+    }
+
+    function renderCourseCaps(){
+      const list = loadCourses();
+      const el = byId('courseCaps'); if(!el) return;
+      el.innerHTML = list.map(c=>{
+        const used = seatsUsed(c.id);
+        const pct = Math.min(100, Math.round(100*used / Math.max(1,c.capacity)));
+        return `<div style="display:flex;align-items:center;justify-content:space-between;margin:6px 0;padding:10px 12px;border:1px solid rgba(255,255,255,.08);border-radius:10px;background:var(--surface)">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <strong>${c.title}</strong>
+            <span class="caps">${used}/${c.capacity} enrolled</span>
+          </div>
+          <div style="min-width:240px;margin-left:16px" class="progress" aria-label="${c.title} utilization"><div class="bar" style="width:${pct}%"></div></div>
+          <div>${seatBadge(c.id)}</div>
+        </div>`
+      }).join('');
+    }
+
+    function renderCourseList(){
+      const q = (byId('searchCourse')?.value || '').trim().toLowerCase();
+      const courses = loadCourses().filter(c=> !q || c.title.toLowerCase().includes(q) || (c.tags||[]).some(t=>t.toLowerCase().includes(q)) );
+      const isAdm = isAdmin();
+      const container = byId('courseList'); if(!container) return;
+      container.innerHTML = courses.map(c=>{
+        const sched = `${c.schedule?.days?.join('/') || '—'} • ${c.schedule?.time || '—'}`;
+        const prereq = (c.prereq||[]).join(', ') || 'None';
+        return `<div class="card" style="padding:12px;margin:8px 0">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <div style="flex:1">
+              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                <strong>${c.title}</strong>
+                ${(c.tags||[]).map(t=>`<span class="badge">#${t}</span>`).join(' ')}
+              </div>
+              <div class="subtitle">ID: <code>${c.id}</code> • Capacity: ${c.capacity} • Schedule: ${sched} • Prereq: ${prereq}</div>
+            </div>
+            ${isAdm ? `<div class="stack">
+              <button class="btn btn-outline btn-sm" data-edit-course="${c.id}">Edit</button>
+              <button class="btn btn-danger btn-sm" data-del-course="${c.id}">Delete</button>
+            </div>` : ''}
+          </div>
+        </div>`
+      }).join('') || '<div class="empty">No courses</div>';
+    }
+
+    function addOrEditCourse(existing){
+      if(!isAdmin()){ toast('Admin only'); return }
+      const c = existing || { id:'', title:'', capacity:5, tags:[], schedule:{days:[], time:'Morning'}, prereq:[] };
+      const days = ['Mon','Tue','Wed','Thu','Fri','Sat'];
+      const times = ['Morning','Afternoon','Evening'];
+      const html = document.createElement('div');
+      html.innerHTML = `
+        <div class="card" style="padding:14px">
+          <h3>${existing? 'Edit':'Add'} Course</h3>
+          <div class="row">
+            <div><label>ID</label><input id="c_id" value="${c.id}" ${existing?'disabled':''} /></div>
+            <div><label>Title</label><input id="c_title" value="${c.title}" /></div>
+          </div>
+          <div class="row">
+            <div><label>Capacity</label><input id="c_cap" type="number" min="1" max="999" value="${c.capacity}" /></div>
+            <div><label>Tags (comma)</label><input id="c_tags" value="${(c.tags||[]).join(', ')}" /></div>
+          </div>
+          <div class="row">
+            <div>
+              <label>Days</label>
+              <div class="stack">${days.map(d=>`<label><input type="checkbox" class="c_day" value="${d}" ${(c.schedule?.days||[]).includes(d)?'checked':''}/> ${d}</label>`).join(' ')}</div>
+            </div>
+            <div>
+              <label>Time of day</label>
+              <select id="c_time">${times.map(t=>`<option ${c.schedule?.time===t?'selected':''}>${t}</option>`).join('')}</select>
+            </div>
+          </div>
+          <div class="row-1">
+            <div><label>Prerequisites (IDs comma separated)</label><input id="c_pr" value="${(c.prereq||[]).join(', ')}" /></div>
+          </div>
+          <div class="actions"><button class="btn btn-primary" id="c_save">Save</button> <button class="btn btn-outline" id="c_cancel">Cancel</button></div>
+        </div>`;
+      const modal = showModal(html);
+      html.querySelector('#c_cancel').onclick = ()=> modal.remove();
+      html.querySelector('#c_save').onclick = ()=>{
+        const id = html.querySelector('#c_id').value.trim();
+        const title = html.querySelector('#c_title').value.trim();
+        const capacity = Math.max(1, parseInt(html.querySelector('#c_cap').value||'5',10));
+        const tags = (html.querySelector('#c_tags').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+        const daysSel = [...html.querySelectorAll('.c_day:checked')].map(x=>x.value);
+        const time = html.querySelector('#c_time').value;
+        const prereq = (html.querySelector('#c_pr').value||'').split(',').map(s=>s.trim()).filter(Boolean);
+        if(!id || !title){ toast('ID and Title required'); return }
+        const list = loadCourses();
+        if(!existing && list.some(x=>x.id===id)){ toast('ID must be unique'); return }
+        const rec = { id, title, capacity, tags, schedule:{days:daysSel, time}, prereq };
+        const next = existing ? list.map(x=> x.id===id? rec : x) : [...list, rec];
+        saveCourses(next); renderCourseOptions(); renderCourseList(); renderCourseCaps(); renderCharts(); modal.remove();
+        log(existing? 'COURSE_UPDATE':'COURSE_INSERT', rec);
+      }
+    }
+
+    // ===== Modal helper =====
+    function showModal(content){
+      const overlay = document.createElement('div');
+      overlay.className = 'overlay';
+      const box = document.createElement('div');
+      box.className = 'modal';
+      box.appendChild(content);
+      overlay.appendChild(box);
+      overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove() });
+      document.body.appendChild(overlay);
+      return overlay;
+    }
+
+    // ===== Roster Table =====
+    function renderTable(){
+      if(!isAdmin()) { renderCourseCaps(); renderCharts(); return; }
+      const regs = applyWhere(loadRegs());
+      const q = byId('search').value.trim().toLowerCase();
+      const cf = byId('courseFilter').value;
+      const mf = byId('modeFilter').value;
+      const tbody = byId('tbody');
+
+      let filtered = regs.filter(r=>{
+        const matchQ = !q || [r.name, r.email, r.courseTitle].some(v=>String(v).toLowerCase().includes(q));
+        const matchC = !cf || r.course===cf;
+        const matchM = !mf || r.mode===mf;
+        return matchQ && matchC && matchM;
+      });
+
+      if (filtered.length === 0){
+        tbody.innerHTML = `<tr><td colspan="9" class="empty">No registrations found.</td></tr>`;
+      } else {
+        tbody.innerHTML = filtered.map(r=>{
+          return `<tr data-id="${r.id}">
+            <td>${r.name}</td>
+            <td>${r.email}</td>
+            <td>${r.phone}</td>
+            <td>${r.courseTitle}</td>
+            <td>${r.mode}</td>
+            <td>${r.start}</td>
+            <td>${r.time}</td>
+            <td>${r.status==='WAITLIST'?'<span class="badge">WAITLIST</span>':'Enrolled'}</td>
+            <td>
+              <button class="btn btn-outline btn-sm" data-act="edit">Edit</button>
+              <button class="btn btn-danger btn-sm" data-act="del">Delete</button>
+            </td>
+          </tr>`
+        }).join('');
+      }
+
+      byId('counts').textContent = `${regs.length} total • ${regs.filter(r=>r.status!=='WAITLIST').length} enrolled`;
+      renderCourseOptions();
+      renderCourseCaps();
+      renderCharts();
+      refreshSQL();
+    }
+
+    // ===== CSV & SQL Export =====
+    function exportCSV(){
+      const regs = loadRegs();
+      if (!regs.length) return toast('No data to export');
+      const headers = ['Name','Email','Phone','Course','Mode','Start','Time','Status','Notes','CreatedAt'];
+      const rows = regs.map(r=>[r.name,r.email,r.phone,r.courseTitle,r.mode,r.start,r.time,r.status,(r.notes||'').replace(/\n/g,' '),r.createdAt]);
+      const csv = [headers.join(','), ...rows.map(row=>row.map(cell=>`"${String(cell).replace(/"/g,'""')}"`).join(','))].join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'registrations.csv'; a.click(); URL.revokeObjectURL(url);
+      toast('CSV downloaded');
+    }
+
+    function exportSQL(){
+      const blob = new Blob([byId('generatedSql').value], {type:'text/sql;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'seed.sql'; a.click(); URL.revokeObjectURL(url);
+      toast('SQL downloaded');
+    }
+
+    // ===== Validation, Constraints & Business Rules =====
+    function validateForm(){
+      const form = byId('regForm');
+      if (!form.reportValidity()) return false;
+      const phone = byId('phone').value.trim();
+      if (!/^\d{10}$/.test(phone)) { toast('Phone must be 10 digits'); return false; }
+
+      const email = byId('email').value.trim().toLowerCase();
+      const courseId = byId('course').value;
+      const rows = loadRegs();
+
+      // UNIQUE (email, course)
+      if (!editingId && rows.some(r=> r.email.toLowerCase()===email && r.course===courseId)){
+        toast('Duplicate: This email is already registered for the selected course');
+        return false;
+      }
+
+      // Prerequisite check
+      const course = loadCourses().find(c=>c.id===courseId);
+      const userPassed = new Set(rows.filter(r=> r.email.toLowerCase()===email && r.status!=='WAITLIST').map(r=>r.course));
+      const missing = (course?.prereq||[]).filter(p=> !userPassed.has(p));
+      if(missing.length){ toast(`Missing prerequisites: ${missing.join(', ')}`); return false; }
+
+      // Schedule conflict check (same student overlapping time/day)
+      const start = byId('start').value; const time = byId('time').value;
+      const days = course?.schedule?.days||[];
+      const conflicts = rows.filter(r=> r.email.toLowerCase()===email && r.start===start && r.time===time ).filter(r=>{
+        const c2 = loadCourses().find(x=>x.id===r.course);
+        return c2 && c2.schedule?.days?.some(d=> days.includes(d));
+      });
+      if(conflicts.length){ toast('Schedule conflict with another enrolled course'); return false; }
+
+      return true;
+    }
+
+    function resetForm(){
+      byId('regForm').reset();
+      editingId = null;
+      byId('submitBtn').textContent = 'Register';
+      updateSeatInfo();
+    }
+
+    function updateSeatInfo(){
+      const courseId = byId('course').value; const badge = byId('seatInfo');
+      if (!courseId) { badge.textContent = '—'; return; }
+      const left = seatsLeft(courseId);
+      badge.textContent = left <= 0 ? 'Full (will waitlist)' : `${left} seats left`;
+    }
+
+    function upsertRegistration(e){
+      e.preventDefault();
+      if (!validateForm()) return;
+
+      const courseId = byId('course').value; const left = seatsLeft(courseId);
+      const rows = loadRegs();
+      const payload = {
+        id: editingId || crypto.randomUUID(),
+        name: byId('fullName').value.trim(),
+        email: byId('email').value.trim(),
+        phone: byId('phone').value.trim(),
+        course: courseId,
+        courseTitle: (loadCourses().find(c=>c.id===courseId)?.title) || courseId,
+        mode: byId('mode').value,
+        start: byId('start').value,
+        time: byId('time').value,
+        notes: byId('notes').value.trim(),
+        status: (left <= 0 && !editingId) ? 'WAITLIST' : 'ENROLLED',
+        createdAt: new Date().toISOString()
+      };
+
+      if (editingId){
+        const i = rows.findIndex(x=>x.id===editingId);
+        if (i>-1) rows[i] = { ...rows[i], ...payload };
+        toast('Registration updated');
+        log('REG_UPDATE', payload);
+      } else {
+        rows.push(payload);
+        toast(payload.status==='WAITLIST' ? 'Added to waitlist' : 'Registered successfully');
+        log('REG_INSERT', payload);
+      }
+      saveRegs(rows); renderTable(); resetForm();
+    }
+
+    function handleTableClick(e){
+      if(!isAdmin()) return;
+      const btn = e.target.closest('button'); if (!btn) return;
+      const tr = e.target.closest('tr'); const id = tr?.dataset.id; if (!id) return;
+      const data = loadRegs(); const rec = data.find(x=>x.id===id); if (!rec) return;
+
+      if (btn.dataset.act==='edit'){
+        editingId = id;
+        byId('fullName').value = rec.name; byId('email').value = rec.email; byId('phone').value = rec.phone;
+        byId('course').value = rec.course; byId('mode').value = rec.mode; byId('start').value = rec.start; byId('time').value = rec.time;
+        byId('notes').value = rec.notes || ''; byId('submitBtn').textContent = 'Save Changes'; updateSeatInfo(); window.scrollTo({top:0,behavior:'smooth'});
+      }
+      if (btn.dataset.act==='del'){
+        if (!confirm('Delete this registration?')) return;
+        const next = data.filter(x=>x.id!==id);
+        saveRegs(next); renderTable(); toast('Deleted');
+        log('REG_DELETE', rec);
+        promoteFromWaitlist(rec.course);
+      }
+    }
+
+    // ===== Waitlist auto‑promotion (simulated trigger) =====
+    function promoteFromWaitlist(courseId){
+      const left = seatsLeft(courseId);
+      if(left <= 0) return;
+      const rows = loadRegs();
+      const idx = rows.findIndex(r=> r.course===courseId && r.status==='WAITLIST');
+      if(idx>-1){ rows[idx].status = 'ENROLLED'; saveRegs(rows); toast(`Promoted from waitlist: ${rows[idx].name}`); log('WAITLIST_PROMOTE', rows[idx]); renderTable(); }
+    }
+
+    function clearAll(){
+      if (!loadRegs().length) return toast('Nothing to clear');
+      if (!confirm('Clear ALL registrations?')) return;
+      localStorage.removeItem(storeKey); renderTable(); toast('All cleared'); resetForm(); log('REG_TRUNCATE',{});
+    }
+
+    function sortBy(key){
+      const data = loadRegs();
+      const collator = new Intl.Collator(undefined, {numeric:true, sensitivity:'base'});
+      const dirKey = `sort_dir_${key}`;
+      const dir = (localStorage.getItem(dirKey) || 'asc') === 'asc' ? 1 : -1;
+      data.sort((a,b)=> dir*collator.compare((a[key]||'').toString(), (b[key]||'').toString()) );
+      localStorage.setItem(dirKey, dir===1 ? 'desc' : 'asc');
+      saveRegs(data); renderTable();
+    }
+
+    // ===== Analytics (vanilla canvas) =====
+    function drawBarChart(ctx, labels, values){
+      const c = ctx.canvas; const w = c.width = c.clientWidth; const h = c.height = 160; const pad = 28;
+      const max = Math.max(1, ...values);
+      ctx.clearRect(0,0,w,h); ctx.font = '12px ui-sans-serif';
+      const bw = (w - pad*2) / Math.max(1,labels.length) * .7; const gap = (w - pad*2) / Math.max(1,labels.length) * .3;
+      labels.forEach((lab,i)=>{
+        const val = values[i]; const x = pad + i*(bw+gap); const bh = (h-pad*2)*(val/max);
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--brand');
+        ctx.fillRect(x, h-pad-bh, bw, bh);
+        ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text');
+        ctx.fillText(lab, x, h-8); ctx.fillText(String(val), x, h-pad-bh-6);
+      });
+    }
+    function drawPieChart(ctx, labels, values){
+      const c = ctx.canvas; const w = c.width = c.clientWidth; const h = c.height = 160; const r = Math.min(w,h)/3;
+      ctx.clearRect(0,0,w,h);
+      const total = values.reduce((a,b)=>a+b,0) || 1; let a0 = -Math.PI/2; const palette = ['--brand','--brand-2','--ok','--warn','--danger'];
+      values.forEach((v,i)=>{ const a1 = a0 + 2*Math.PI*(v/total); ctx.beginPath(); ctx.moveTo(w/2,h/2); ctx.arc(w/2,h/2,r,a0,a1); ctx.closePath(); ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue(palette[i%palette.length]); ctx.fill(); a0=a1; });
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--text'); ctx.font='12px ui-sans-serif';
+      labels.forEach((lab,i)=>{ ctx.fillText(`${lab}: ${values[i]}`, 8, 14+16*i); });
+    }
+    function renderCharts(){
+      const regs = loadRegs(); const courses = loadCourses();
+      const perCourse = courses.map(c=> regs.filter(r=>r.course===c.id && r.status!=='WAITLIST').length );
+      const ce = byId('chartEnroll'); const cm = byId('chartModes');
+      if(ce) drawBarChart(ce.getContext('2d'), courses.map(c=>c.id), perCourse);
+
+      const modes = ['Online','On‑campus','Hybrid'];
+      const perMode = modes.map(m=> regs.filter(r=>r.mode===m).length );
+      if(cm) drawPieChart(cm.getContext('2d'), modes, perMode);
+    }
+
+    // ===== DBMS Tab (DDL + SQL + WHERE filter) =====
+    const DDL = `-- PostgreSQL\nCREATE TABLE course (\n  id TEXT PRIMARY KEY,\n  title TEXT NOT NULL,\n  capacity INT NOT NULL CHECK (capacity > 0),\n  tags TEXT[],\n  schedule_days TEXT[],\n  schedule_time TEXT,\n  prereq TEXT[]\n);\n\nCREATE TABLE student (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  name TEXT NOT NULL,\n  email TEXT NOT NULL CHECK (position('@' in email)>1),\n  phone CHAR(10) CHECK (phone ~ '^[0-9]{10}$')\n);\n\nCREATE TABLE registration (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  student_email TEXT NOT NULL REFERENCES student(email) ON DELETE CASCADE,\n  course_id TEXT NOT NULL REFERENCES course(id) ON DELETE CASCADE,\n  mode TEXT CHECK (mode IN ('Online','On‑campus','Hybrid')),\n  start_date DATE NOT NULL,\n  time_of_day TEXT CHECK (time_of_day IN ('Morning','Afternoon','Evening')),\n  notes TEXT,\n  status TEXT NOT NULL CHECK (status IN ('ENROLLED','WAITLIST')),\n  created_at TIMESTAMPTZ DEFAULT now(),\n  UNIQUE(student_email, course_id)\n);\n\n-- Trigger idea: before insert on registration\n-- 1) if seats full -> status='WAITLIST'\n-- 2) enforce prerequisites and schedule conflict\n-- 3) after delete: promote first WAITLIST to ENROLLED\n`;
+
+    function refreshSQL(){
+      const ddlEl = byId('ddl'); if(ddlEl) ddlEl.textContent = DDL;
+      const regs = loadRegs();
+      const cols = ['name','email','phone','course_id','mode','start_date','time_of_day','status','notes','created_at'];
+      const rows = regs.map(r=> {
+        const vals = [r.name, r.email, r.phone, r.course, r.mode, r.start, r.time, r.status, r.notes||'', r.createdAt]
+          .map(v=> `'${String(v).replace(/'/g,"''")}'`);
+        return `INSERT INTO registration (${cols.join(',')}) VALUES (${vals.join(',')});`;
+      }).join('\n');
+      const out = byId('generatedSql'); if(out) out.value = rows || '-- (no registrations)';
+    }
+
+    function applyWhere(rows){
+      if(!WHERE) return rows;
+      // Extremely tiny parser: supports =, LIKE (case-insensitive includes), AND, OR on fields
+      const expr = WHERE.replace(/^where/i,'').trim();
+      const parts = expr.split(/\s+OR\s+/i).map(p=> p.trim());
+      return rows.filter(row=> parts.some(orp=>{
+        const ands = orp.split(/\s+AND\s+/i);
+        return ands.every(clause=>{
+          const mEq = clause.match(/(\w+)\s*=\s*'([^']*)'/);
+          const mLike = clause.match(/(\w+)\s+LIKE\s*'([^']*)'/i);
+          if(mEq){ const [_,k,v]=mEq; return String(row[k]??'')===v }
+          if(mLike){ const [_,k,v]=mLike; return String(row[k]??'').toLowerCase().includes(v.toLowerCase()) }
+          return true; // ignore unknown clause
+        });
+      }));
+    }
+
+    // ===== Audit =====
+    function renderAudit(){
+      const logArr = loadAudit();
+      const el = byId('audit'); if(!el) return;
+      el.innerHTML = logArr.map(e=> `<div>[${new Date(e.ts).toLocaleString()}] <strong>${e.action}</strong> — <code>${(e.payload?.email||e.payload?.id||'')}</code></div>`).join('') || '—';
+    }
+
+    // ===== Theme =====
+    function toggleTheme(){
+      const isLight = document.documentElement.classList.toggle('light');
+      localStorage.setItem('theme',''+(isLight?'light':'dark'));
+      renderCharts();
+    }
+    function initTheme(){
+      const t = localStorage.getItem('theme'); if(t==='light') document.documentElement.classList.add('light');
+    }
+
+    // ===== Router (nav function) =====
+    function nav(route){
+      // route: 'register' | 'catalog' | 'admin'
+      $$('.route').forEach(r=> r.style.display='none');
+      $$('.navlink').forEach(n=> n.classList.remove('active'));
+      if(route==='admin'){
+        if(!isAdmin()){ toast('Admin login required'); showAuthModal(localStorage.getItem(adminHashKey)? 'login':'setup'); route='register'; }
+        else route='register'; // Admin view lives inside register route (admin panel on right)
+      }
+      byId('route-'+route).style.display='';
+      $(`.navlink[data-route="${route}"]`)?.classList.add('active');
+      // Persist route in hash
+      location.hash = '#/'+route;
+      // Re-render context specific views
+      renderCourseOptions();
+      renderCourseList();
+      renderTable();
+    }
+
+    function initRouter(){
+      window.addEventListener('hashchange', ()=>{
+        const r = (location.hash.replace('#/','') || 'register');
+        nav(r);
+      });
+      $$('.navlink').forEach(a=> a.addEventListener('click', ()=> nav(a.dataset.route)));
+      const initial = (location.hash.replace('#/','') || 'register');
+      nav(initial);
+    }
+
+    // ===== Events & Init =====
+    document.addEventListener('DOMContentLoaded', ()=>{
+      initTheme();
+      updateAdminUI();
+      renderCourseOptions(); renderCourseCaps(); renderCourseList(); renderAudit();
+      renderTable();
+
+      // Default date: next Monday
+      const d = new Date(); const day = d.getDay(); const diff = (8 - (day || 7)); d.setDate(d.getDate() + diff); byId('start').valueAsDate = d;
+
+      // Tabs (only inside register route)
+      $$('.tab').forEach(tab=> tab.addEventListener('click', ()=>{
+        // Hide if admin-only and not admin
+        if(tab.classList.contains('admin-only') && !isAdmin()){ toast('Admin only'); return; }
+        $$('.tab').forEach(t=> t.classList.remove('active')); tab.classList.add('active');
+        $$('.tabpane').forEach(p=> p.style.display='none');
+        byId('tab-'+tab.dataset.tab).style.display='block';
+      }));
+
+      // Form actions
+      byId('regForm').addEventListener('submit', upsertRegistration);
+      byId('resetBtn').addEventListener('click', resetForm);
+      byId('clearAllBtn').addEventListener('click', clearAll);
+      byId('exportCsvBtn').addEventListener('click', exportCSV);
+      byId('exportSqlBtn').addEventListener('click', exportSQL);
+      byId('course').addEventListener('change', updateSeatInfo);
+
+      // Admin table interactions
+      byId('search').addEventListener('input', renderTable);
+      byId('courseFilter').addEventListener('change', renderTable);
+      byId('modeFilter').addEventListener('change', renderTable);
+      byId('tbody').addEventListener('click', handleTableClick);
+      $$('#table thead th[data-sort]').forEach(th=> th.addEventListener('click', ()=> sortBy(th.dataset.sort)));
+
+      // Catalog route events
+      byId('addCourseBtn').addEventListener('click', ()=> addOrEditCourse());
+      byId('searchCourse').addEventListener('input', renderCourseList);
+      byId('courseList').addEventListener('click', (e)=>{
+        const del = e.target.closest('[data-del-course]');
+        const ed  = e.target.closest('[data-edit-course]');
+        if(del){ if(!isAdmin()) return; const id = del.dataset.delCourse; const list=loadCourses(); if(confirm('Delete course '+id+'?')){ saveCourses(list.filter(x=>x.id!==id)); renderCourseList(); renderCourseOptions(); renderCourseCaps(); log('COURSE_DELETE',{id}); } }
+        if(ed){ if(!isAdmin()) return; const id = ed.dataset.editCourse; const c = loadCourses().find(x=>x.id===id); addOrEditCourse(c); }
+      });
+
+      // DBMS tab
+      byId('refreshSqlBtn').addEventListener('click', refreshSQL);
+      refreshSQL();
+      byId('applyWhere').addEventListener('click', ()=>{ WHERE = byId('where').value; renderTable(); });
+      byId('clearWhere').addEventListener('click', ()=>{ WHERE=null; byId('where').value=''; renderTable(); });
+
+      // Theme
+      byId('themeBtn').addEventListener('click', toggleTheme);
+
+      // Keyboard: Ctrl+K focus search (admin table)
+      document.addEventListener('keydown', (e)=>{ if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); (isAdmin()? byId('search'):byId('fullName')).focus(); } });
+
+      // Router after DOM ready
+      initRouter();
+
+      // Soft hint to set password if not set
+      if(!localStorage.getItem(adminHashKey)){
+        toast('Tip: Click 🔒 Admin to set a password');
+      }
+
+      // Draw charts once ready
+      setTimeout(renderCharts, 120);
+    });
+  </script>
+</body>
+</html>
